@@ -8,9 +8,7 @@ interface CardShuffleProps {
   onComplete: () => void
 }
 
-export default function CardShuffleComponent({
-  onComplete,
-}: CardShuffleProps) {
+export default function CardShuffleComponent({ onComplete }: CardShuffleProps) {
   // 10장의 카드를 가상으로 생성
   const [cards, setCards] = useState(Array.from({ length: 12 }, (_, i) => i))
 
@@ -23,7 +21,7 @@ export default function CardShuffleComponent({
   }, [onComplete])
 
   return (
-    <div className='relative w-full h-54 flex items-center justify-center'>
+    <div className='relative w-full h-48 md:h-64 flex items-center justify-center'>
       <AnimatePresence>
         {cards.map((card, index) => (
           <motion.div
@@ -31,21 +29,21 @@ export default function CardShuffleComponent({
             initial={{ x: 0, y: 0, rotate: 0 }}
             animate={{
               // 랜덤하게 퍼졌다가 다시 모이는 애니메이션
-              x: [0, (index - 5) * 30, Math.random() * 200 - 100, 0],
+              x: [0, (index - 5) * 20, Math.random() * 200 - 100, 0],
               y: [0, Math.random() * -50, Math.random() * 50, 0],
               rotate: [0, index * 15, Math.random() * 360, 0],
             }}
             transition={{
-              duration: 2,
+              duration: 1.4,
               repeat: Infinity,
               ease: 'easeInOut',
             }}
             style={{
               zIndex: cards.length - index,
             }}
-            className='absolute w-32 h-48 bg-gradient-to-br from-indigo-900 to-slate-900 border-2 border-amber-500/30 rounded-lg shadow-2xl flex items-center justify-center'>
+            className='absolute w-20 h-32 md:w-32 md:h-48 bg-gradient-to-br from-indigo-900 to-slate-900 border-2 border-amber-500/30 rounded-lg shadow-2xl flex items-center justify-center'>
             {/* 카드 뒷면 문양 (검은 고양이 실루엣 등) */}
-            <div className='w-24 h-40 border border-amber-500/10 rounded flex items-center justify-center'>
+            <div className='relative w-full h-full overflow-hidden'>
               <Image
                 src='/images/main/card_back.jpg'
                 alt=''
@@ -63,7 +61,8 @@ export default function CardShuffleComponent({
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 1, 0] }}
         transition={{ duration: 1.5, repeat: Infinity }}
-        className='absolute -bottom-20 text-xl text-amber-300 font-light tracking-widest'>
+        /* 4. 문구 위치도 카드 크기에 맞춰 살짝 조정 (-bottom-20 -> -bottom-12) */
+        className='absolute -bottom-12 md:-bottom-20 text-xs md:text-xl text-amber-100 font-light tracking-widest'>
         운명의 카드를 섞는 중...
       </motion.div>
     </div>

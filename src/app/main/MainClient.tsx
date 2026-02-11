@@ -78,11 +78,11 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
           alt='Mystic Black Cat Tarot'
           fill
           priority
-          quality={90}
+          quality={95}
           sizes='100vw'
           className={`object-cover transition-opacity duration-1000 ${
             status === 'intro' ? 'opacity-70' : 'opacity-30'
-          } object-center md:object-center`}
+          } object-center`}
         />
         <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70' />
       </div>
@@ -98,13 +98,13 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
             <h1 className='text-4xl mt-20 md:text-6xl font-serif text-amber-100 drop-shadow-[0_0_15px_rgba(251,191,36,0.5)] mb-4'>
               고양이 점술사
             </h1>
-            <p className='text-slate-300 tracking-[0.2em] text-sm md:text-base font-medium'>
-              영험한 검은 고양이가 집사님의 운명을 읽어드립니다.
+            <p className='text-slate-300 tracking-wider text-sm md:text-base font-medium leading-relaxed text-center px-6'>
+              영험한 검은 고양이가<br className='md:hidden' /> 집사님의 운명을 읽어드립니다.
             </p>
           </motion.div>
 
           {/* 메뉴 선택 버튼 */}
-          <div className='flex flex-wrap justify-center gap-4 w-full max-w-2xl'>
+          <div className='grid grid-cols-2 gap-2 md:gap-4'>
             <MenuButtonComponent onSelect={handleStart} />
           </div>
 
@@ -130,9 +130,7 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
       {/* card shuffling 영역 */}
       {status === 'shuffling' && (
         <div className='z-10 w-full max-w-2xl px-4'>
-          <CardShuffleComponent
-            onComplete={() => setStatus('showCard')}
-          />
+          <CardShuffleComponent onComplete={() => setStatus('showCard')} />
         </div>
       )}
 

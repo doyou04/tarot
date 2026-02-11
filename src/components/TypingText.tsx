@@ -29,7 +29,7 @@ export default function TypingText({ text, speed = 40 }: TypingTextProps) {
   }, [currentIndex, text, speed])
 
   return (
-    <div className="leading-relaxed whitespace-pre-wrap font-light text-slate-200">
+    <div className="leading-relaxed whitespace-pre-wrap font-light text-slate-200 text-sm md:text-lg">
       {displayedText}
       {/* 타이핑 중임을 나타내는 커서 효과 (선택 사항) */}
       {currentIndex < text.length && (
