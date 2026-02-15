@@ -89,7 +89,7 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
 
       {/* intro 영역 */}
       {status === 'intro' && (
-        <div className='z-10 flex flex-col items-center mt-20 gap-12 px-4'>
+        <div className='z-10 flex flex-col items-center mt-10 md:mt-20 gap-6 md:gap-12 px-4'>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -99,7 +99,8 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
               고양이 점술사
             </h1>
             <p className='text-slate-300 tracking-wider text-sm md:text-base font-medium leading-relaxed text-center px-6'>
-              영험한 검은 고양이가<br className='md:hidden' /> 집사님의 운명을 읽어드립니다.
+              영험한 검은 고양이가
+              <br className='md:hidden' /> 집사님의 운명을 읽어드립니다.
             </p>
           </motion.div>
 

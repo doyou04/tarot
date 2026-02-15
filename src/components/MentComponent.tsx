@@ -54,7 +54,7 @@ export default function MentComponent({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.3, duration: 0.8 }}
-        className='group relative mt-12 md:mt-20 mx-auto px-8 py-3 md:px-12 md:py-4 bg-slate-900/80 border-2 border-amber-400/50 rounded-full flex items-center gap-2 md:gap-3 overflow-hidden'>
+        className='group relative mt-6 md:mt-12 mx-auto px-8 py-3 md:px-12 md:py-4 bg-slate-900/80 border-2 border-amber-400/50 rounded-full flex items-center gap-2 md:gap-3 overflow-hidden'>
         {/* 버튼 내부 반짝임 효과 */}
         <div className='absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000' />
 

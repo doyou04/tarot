@@ -62,7 +62,7 @@ export default function CardShuffleComponent({ onComplete }: CardShuffleProps) {
         animate={{ opacity: [0, 1, 0] }}
         transition={{ duration: 1.5, repeat: Infinity }}
         /* 4. 문구 위치도 카드 크기에 맞춰 살짝 조정 (-bottom-20 -> -bottom-12) */
-        className='absolute -bottom-12 md:-bottom-20 text-xs md:text-xl text-amber-100 font-light tracking-widest'>
+        className='absolute -bottom-10 md:-bottom-20 text-xs md:text-xl text-amber-100 font-light tracking-widest'>
         운명의 카드를 섞는 중...
       </motion.div>
     </div>

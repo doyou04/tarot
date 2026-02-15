@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react'
 
 interface TypingTextProps {
-  text: string;
+  text?: string;
   speed?: number; // 글자당 속도 (ms)
 }
 
-export default function TypingText({ text, speed = 40 }: TypingTextProps) {
+export default function TypingText({ text="", speed = 40 }: TypingTextProps) {
   const [displayedText, setDisplayedText] = useState('')
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -32,7 +32,7 @@ export default function TypingText({ text, speed = 40 }: TypingTextProps) {
     <div className="leading-relaxed whitespace-pre-wrap font-light text-slate-200 text-sm md:text-lg">
       {displayedText}
       {/* 타이핑 중임을 나타내는 커서 효과 (선택 사항) */}
-      {currentIndex < text.length && (
+      {currentIndex < text?.length && (
         <span className="inline-block w-1 h-5 ml-1 bg-amber-400 animate-pulse align-middle" />
       )}
     </div>

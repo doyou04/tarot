@@ -22,11 +22,20 @@ export default function SelectCardComponent({
 }: SelectCardComponentProps) {
   const [selectedCards, setSelectedCards] = useState<TarotCard[]>([])
   const [shuffledCards, setShuffledCards] = useState<TarotCard[]>([])
+  const [isDisabled, setIsDisabled] = useState(true)
 
   useEffect(() => {
     const shuffled = [...allCards].sort(() => Math.random() - 0.5)
     setShuffledCards(shuffled)
   }, [allCards])
+
+  useEffect(() => {
+    if (selectedCards.length === 3) {
+      setIsDisabled(false)
+    } else {
+      setIsDisabled(true)
+    }
+  }, [selectedCards])
 
   const handleCardClick = (card: TarotCard) => {
     if (
@@ -34,8 +43,6 @@ export default function SelectCardComponent({
       !selectedCards.find(c => c.id === card.id)
     ) {
       setSelectedCards(prev => [...prev, card])
-
-      console.log(selectedCards)
     }
   }
 
@@ -44,8 +51,8 @@ export default function SelectCardComponent({
   }
 
   return (
-    <div className='min-h-screen h-full text-white flex flex-col items-center gap-3 md:gap-6 p-4'>
-      <h2 className='text-base mt-0 md:mt-15 md:text-2xl text-amber-100 text-center px-4'>
+    <div className='min-h-screen h-full text-white flex flex-col items-center justify-center gap-5 md:gap-8 px-0 md:px-5 py-5 md:py-10'>
+      <h2 className='text-base md:text-2xl text-amber-100 text-center px-4'>
         마음을 담아 3장의
         <br className='md:hidden' />
         카드를 골라주세요
@@ -54,7 +61,7 @@ export default function SelectCardComponent({
       {/* 선택된 카드가 놓일 자리 (Slot) */}
       <div className='flex gap-2 md:gap-6 min-h-[130px] md:min-h-[320px] items-center justify-center border-2 border-dashed border-amber-500/20 rounded-2xl px-2 md:px-10 w-full max-w-4xl bg-slate-900/30'>
         <AnimatePresence mode='popLayout'>
-          {selectedCards.map((card) => (
+          {selectedCards.map(card => (
             <motion.div
               key={card.id}
               layoutId={`card-${card.id}`}
@@ -79,14 +86,16 @@ export default function SelectCardComponent({
         </AnimatePresence>
 
         {selectedCards.length === 0 && (
-          <p className='text-slate-500 text-base md:text-lg'>카드가 여기에 나타납니다</p>
+          <p className='text-slate-500 text-base md:text-lg'>
+            카드가 여기에 나타납니다
+          </p>
         )}
       </div>
 
       {/* 펼쳐진 카드 더미 */}
-      <div className='relative w-full max-w-4xl py-2 group'>
+      <div className='relative w-full group'>
         <div
-          className='flex flex-nowrap items-center overflow-x-auto overflow-y-hidden pt-5 md:pt-20 pb-10 md:px-0 pl-0 pr-5 scrollbar-hide touch-pan-x'
+          className='flex flex-nowrap items-center md:justify-center overflow-x-auto overflow-y-hidden md:px-0 pl-0 pr-5 scrollbar-hide touch-pan-x pt-7 md:pt-17'
           style={{
             WebkitOverflowScrolling: 'touch', // iOS 가속 스크롤 지원
             scrollSnapType: 'x proximity', // 스크롤 시 카드가 자석처럼 붙는 효과 (선택)
@@ -95,6 +104,7 @@ export default function SelectCardComponent({
             const isSelected = selectedCards.some(c => c.id === card.id)
             return (
               <motion.div
+                key={card.id}
                 layoutId={`card-${card.id}`}
                 style={{
                   opacity: isSelected ? 0 : 1,
@@ -106,7 +116,6 @@ export default function SelectCardComponent({
                   !isSelected ? { y: -50, scale: 1.1, zIndex: 100 } : {}
                 }
                 onClick={() => !isSelected && handleCardClick(card)}
-                // className='relative w-32 h-48 md:w-32 md:h-48 cursor-pointer flex-shrink-0 -ml-20 md:-ml-23 first:ml-0 transition-opacity duration-300'>
                 className='relative w-10 h-16 sm:w-20 sm:h-32 md:w-32 md:h-48 cursor-pointer flex-shrink-0 -ml-7 sm:-ml-12 md:-ml-23 first:ml-0 transition-opacity duration-300'>
                 <div className='w-full h-full bg-gradient-to-br from-indigo-900 to-slate-900 border-2 border-amber-500/30 rounded-md md:rounded-lg shadow-xl md:shadow-2xl flex items-center justify-center overflow-hidden'>
                   <div className='w-[90%] h-[90%] border border-amber-500/10 rounded flex items-center justify-center '>
@@ -115,7 +124,6 @@ export default function SelectCardComponent({
                       alt=''
                       fill
                       sizes='(max-width: 768px) 64px, 96px'
-                      // className='rounded-lg md:rounded-xl shadow-[0_0_15px_rgba(251,191,36,0.3)] border-2 border-amber-500 object-fit'
                       className='rounded-lg md:rounded-xl border shadow-[0_0_15px_rgba(251,191,36,0.3)] border-2  border-amber-500 object-fit'
                     />
                   </div>
@@ -125,29 +133,37 @@ export default function SelectCardComponent({
           })}
         </div>
       </div>
-
-      {selectedCards.length === 3 && (
-        <motion.button
-          onClick={() => onComplete(selectedCards)}
-          whileHover={{
-            scale: 1.05,
-            boxShadow: '0px 0px 20px rgba(251, 191, 36, 0.6)',
-          }}
-          whileTap={{ scale: 0.95 }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.3, duration: 0.8 }}
-          className='group relative mx-auto px-8 py-3 md:px-12 md:py-4 bg-slate-900/80 border-2 border-amber-400/50 rounded-full flex items-center gap-2 md:gap-3 overflow-hidden'>
-          {/* 버튼 내부 반짝임 효과 */}
+      <motion.button
+        disabled={isDisabled}
+        onClick={() => onComplete(selectedCards)}
+        whileHover={
+          !isDisabled
+            ? {
+                scale: 1.05,
+                boxShadow: '0px 0px 20px rgba(251, 191, 36, 0.6)',
+              }
+            : {}
+        }
+        whileTap={!isDisabled ? { scale: 0.95 } : {}}
+        transition={{ delay: 1.3, duration: 0.8 }}
+        className={`
+    group relative mx-auto px-8 py-3 md:px-12 md:py-4 rounded-full flex items-center gap-2 md:gap-3 overflow-hidden transition-all duration-300
+    ${
+      isDisabled
+        ? 'bg-slate-800/50 border-slate-600/50 cursor-not-allowed opacity-50 grayscale'
+        : 'bg-slate-900/80 border-2 border-amber-400/50 cursor-pointer opacity-100'
+    }
+  `}>
+        {/* 버튼 내부 반짝임 효과 */}
+        {!isDisabled && (
           <div className='absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000' />
-
-          <Sparkles className='w-4 h-4 md:w-5 md:h-5 text-amber-400 group-hover:animate-pulse flex-shrink-0' />
-          <span className='text-base md:text-2xl font-medium text-amber-50 tracking-wider whitespace-nowrap'>
-            결과 확인
-          </span>
-          <Sparkles className='w-4 h-4 md:w-5 md:h-5 text-amber-400 group-hover:animate-pulse flex-shrink-0' />
-        </motion.button>
-      )}
+        )}
+        <Sparkles className='w-4 h-4 md:w-5 md:h-5 text-amber-400 group-hover:animate-pulse flex-shrink-0' />
+        <span className='text-base md:text-2xl font-medium text-amber-50 tracking-wider whitespace-nowrap'>
+          결과 확인
+        </span>
+        <Sparkles className='w-4 h-4 md:w-5 md:h-5 text-amber-400 group-hover:animate-pulse flex-shrink-0' />
+      </motion.button>
     </div>
   )
 }
