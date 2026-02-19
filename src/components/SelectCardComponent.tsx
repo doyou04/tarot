@@ -73,7 +73,8 @@ export default function SelectCardComponent({
                 transition={{ duration: 0.6 }}
                 className='relative w-[60px] h-[100px] sm:w-[100px] sm:h-[160px] md:w-[160px] md:h-[280px] overflow-hidden rounded-lg md:rounded-xl shadow-[0_0_20px_rgba(251,191,36,0.2)] border border-amber-500/60'>
                 <Image
-                  src={card.image}
+                  // src={card.image}
+                  src='/images/main/card_back.jpg'
                   alt={card.name}
                   fill
                   sizes='(max-width: 768px) 64px, 96px'

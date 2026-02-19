@@ -59,12 +59,12 @@ export default function MentComponent({
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder={PLACEHOLDER[selectedMenu]}
-          maxLength={100}
+          maxLength={50}
           rows={3}
           className='w-full bg-slate-900/70 backdrop-blur-sm border border-amber-500/30 rounded-2xl px-4 py-3 md:px-5 md:py-4 text-amber-50 text-sm md:text-base placeholder:text-amber-200/30 focus:outline-none focus:border-amber-400/60 focus:ring-1 focus:ring-amber-400/30 resize-none transition-all'
         />
         <p className='text-right text-xs text-amber-200/30 mt-1 mr-1'>
-          {question.length}/100
+          {question.length}/50
         </p>
       </motion.div>
 
@@ -84,7 +84,7 @@ export default function MentComponent({
 
         <Sparkles className='w-4 h-4 md:w-5 md:h-5 text-amber-400 group-hover:animate-pulse flex-shrink-0' />
         <span className='text-base md:text-2xl font-medium text-amber-50 tracking-wider whitespace-nowrap'>
-          마음의 준비 완료
+          입력완료
         </span>
         <Sparkles className='w-4 h-4 md:w-5 md:h-5 text-amber-400 group-hover:animate-pulse flex-shrink-0' />
       </motion.button>
