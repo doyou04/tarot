@@ -9,6 +9,7 @@ import MentComponent from '@/src/components/MentComponent'
 import SelectCardComponent from '@/src/components/SelectCardComponent'
 import ResultComponent from '@/src/components/ResultComponent'
 
+
 type MenuType = 'love' | 'health' | 'money' | 'career'
 
 interface TarotCard {
@@ -26,9 +27,11 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
   const [aiResult, setAiResult] = useState<string>('')
   const [isLoading, setIsLoading] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [userQuestion, setUserQuestion] = useState<string>('')
 
   // 컴포넌트가 마운트(브라우저 로드)된 후에만 true가 됨
   useEffect(() => {
+    
     setMounted(true)
   }, [])
 
@@ -54,6 +57,7 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           menu: selectedMenu,
+          question: userQuestion,
           cards: cards.map((c, i) => ({
             pos: i === 0 ? '과거' : i === 1 ? '현재' : '미래',
             name: c.name,
@@ -123,7 +127,10 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
       {/* image select 영역 */}
       {status === 'select' && (
         <MentComponent
-          onComplete={() => setStatus('shuffling')}
+          onComplete={(question: string) => {
+            setUserQuestion(question)
+            setStatus('shuffling')
+          }}
           selectedMenu={selectedMenu ?? 'career'}
         />
       )}

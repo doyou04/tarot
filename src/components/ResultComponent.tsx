@@ -1,9 +1,9 @@
 import { useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
 import TypingText from './TypingText'
-import { Share2, RotateCcw } from 'lucide-react' // 아이콘 추가
+import { Share2, RotateCcw } from 'lucide-react' 
+import { nanoid } from "nanoid"
 
 interface ResultComponentProps {
   selectedCards: any[]
@@ -20,19 +20,35 @@ export default function ResultComponent({
 }: ResultComponentProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  // 공유하기 기능 함수 (Web Share API 활용)
+  // 공유하기 기능 함수 (서버 저장 + 짧은 URL)
   const handleShare = async () => {
     try {
+      const id = nanoid(10) // 짧은 고유 ID 생성
+
+      // 서버에 결과 저장
+      const res = await fetch('/api/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id,
+          ids: selectedCards.map(c => c.id),
+          result: aiResult,
+        }),
+      })
+
+      if (!res.ok) throw new Error('저장 실패')
+
+      const shareUrl = `${window.location.origin}/share/${id}`
+
       if (navigator.share) {
         await navigator.share({
           title: '고양이 타로 결과',
-          text: '검은 고양이 점술사가 들려주는 나의 운명을 확인해보세요!',
-          url: window.location.href,
+          text: '나의 신비로운 고양이 타로 결과를 확인해봐!',
+          url: shareUrl,
         })
       } else {
-        // Web Share API를 지원하지 않는 경우 클립보드 복사
-        await navigator.clipboard.writeText(window.location.href)
-        alert('링크가 클립보드에 복사되었습니다!')
+        await navigator.clipboard.writeText(shareUrl)
+        alert('결과가 담긴 링크가 복사되었다냥! 🐾')
       }
     } catch (error) {
       console.error('공유하기 실패:', error)
@@ -108,7 +124,7 @@ export default function ResultComponent({
         )}
       </div>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         className='flex flex-row gap-2 md:gap-4 w-full justify-center items-center px-2'>
         {/* 다시하기 버튼 */}
