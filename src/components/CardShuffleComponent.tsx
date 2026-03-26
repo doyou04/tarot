@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 interface CardShuffleProps {
   onComplete: () => void
 }
 
 export default function CardShuffleComponent({ onComplete }: CardShuffleProps) {
+  const t = useTranslations()
   // 10장의 카드를 가상으로 생성
   const [cards, setCards] = useState(Array.from({ length: 12 }, (_, i) => i))
 
@@ -63,7 +65,7 @@ export default function CardShuffleComponent({ onComplete }: CardShuffleProps) {
         transition={{ duration: 1.5, repeat: Infinity }}
         /* 4. 문구 위치도 카드 크기에 맞춰 살짝 조정 (-bottom-20 -> -bottom-12) */
         className='absolute -bottom-10 md:-bottom-20 text-xs md:text-xl text-amber-100 font-light tracking-widest'>
-        운명의 카드를 섞는 중...
+        {t('shuffle.shuffling')}
       </motion.div>
     </div>
   )

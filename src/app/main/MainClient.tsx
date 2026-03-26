@@ -8,9 +8,17 @@ import MenuButtonComponent from '@/src/components/MenuButtonComponent'
 import MentComponent from '@/src/components/MentComponent'
 import SelectCardComponent from '@/src/components/SelectCardComponent'
 import ResultComponent from '@/src/components/ResultComponent'
+import { MenuType } from '@/src/types/menu'
+import { useSession, signOut } from 'next-auth/react'
+import { LogIn, LogOut } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import LanguageSwitcher from '@/src/components/LanguageSwitcher'
 
-
-type MenuType = 'love' | 'health' | 'money' | 'career'
+interface TarotReading {
+  ko: string
+  en: string
+}
 
 interface TarotCard {
   id: string
@@ -19,12 +27,15 @@ interface TarotCard {
 }
 
 export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
+  const { data: session } = useSession()
+  const router = useRouter()
+  const t = useTranslations()
   const [status, setStatus] = useState<
     'intro' | 'select' | 'shuffling' | 'showCard' | 'result'
   >('intro')
   const [selectedMenu, setSelectedMenu] = useState<MenuType | null>(null)
   const [selectedCards, setSelectedCards] = useState<TarotCard[]>([])
-  const [aiResult, setAiResult] = useState<string>('')
+  const [aiResult, setAiResult] = useState<TarotReading | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [userQuestion, setUserQuestion] = useState<string>('')
@@ -41,6 +52,11 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
   }
 
   const handleStart = (menu: MenuType) => {
+    // 오늘의 운세(daily) 외 메뉴는 로그인 필요
+    if (menu !== 'daily' && !session) {
+      router.push('/login')
+      return
+    }
     setSelectedMenu(menu)
     setStatus('select')
   }
@@ -59,7 +75,7 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
           menu: selectedMenu,
           question: userQuestion,
           cards: cards.map((c, i) => ({
-            pos: i === 0 ? '과거' : i === 1 ? '현재' : '미래',
+            pos: i === 0 ? t('common.past') : i === 1 ? t('common.present') : t('common.future'),
             name: c.name,
           })),
         }),
@@ -68,7 +84,8 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
       const data = await response.json()
       setAiResult(data.result)
     } catch (error) {
-      setAiResult('운명의 실타래가 꼬였다냥... 잠시 후 다시 시도해달라냥!')
+      const errorMsg = t('common.error')
+      setAiResult({ ko: errorMsg, en: errorMsg })
     } finally {
       setIsLoading(false)
     }
@@ -91,6 +108,26 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
         <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70' />
       </div>
 
+      {/* 로그인/로그아웃 + 언어 전환 버튼 */}
+      <div className='absolute top-4 right-4 md:top-6 md:right-6 z-20 flex items-center gap-2'>
+        <LanguageSwitcher />
+        {session ? (
+          <button
+            onClick={() => signOut()}
+            className='flex items-center gap-1.5 px-2 py-1.5 md:px-4 md:py-2 rounded-full bg-slate-900/60 backdrop-blur-sm border border-amber-500/30 text-amber-200 text-xs md:text-sm hover:bg-slate-800/80 transition-all'>
+            <LogOut className='w-3.5 h-3.5 md:w-4 md:h-4' />
+            <span className='hidden md:inline'>{t('common.logout')}</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => router.push('/login')}
+            className='flex items-center gap-1.5 px-2 py-1.5 md:px-4 md:py-2 rounded-full bg-slate-900/60 backdrop-blur-sm border border-amber-500/30 text-amber-200 text-xs md:text-sm hover:bg-slate-800/80 transition-all'>
+            <LogIn className='w-3.5 h-3.5 md:w-4 md:h-4' />
+            <span className='hidden md:inline'>{t('common.login')}</span>
+          </button>
+        )}
+      </div>
+
       {/* intro 영역 */}
       {status === 'intro' && (
         <div className='z-10 flex flex-col items-center mt-10 md:mt-20 gap-6 md:gap-12 px-4'>
@@ -100,11 +137,10 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
             transition={{ duration: 1.2, ease: 'easeOut' }}
             className='text-center'>
             <h1 className='text-4xl mt-20 md:text-6xl font-serif text-amber-100 drop-shadow-[0_0_15px_rgba(251,191,36,0.5)] mb-4'>
-              고양이 점술사
+              {t('main.title')}
             </h1>
             <p className='text-slate-300 tracking-wider text-sm md:text-base font-medium leading-relaxed text-center px-6'>
-              영험한 검은 고양이가
-              <br className='md:hidden' /> 집사님의 운명을 읽어드립니다.
+              {t('main.subtitle')}
             </p>
           </motion.div>
 
@@ -119,7 +155,7 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
             animate={{ opacity: 0.5 }}
             transition={{ delay: 1.5, duration: 2 }}
             className='absolute bottom-10 text-[10px] text-amber-200/40 tracking-[0.5em] uppercase'>
-            고양이가 세상을 구한다.
+            {t('main.footer')}
           </motion.div>
         </div>
       )}

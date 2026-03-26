@@ -1,13 +1,21 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import TypingText from './TypingText'
 import { Share2, RotateCcw } from 'lucide-react' 
 import { nanoid } from "nanoid"
+import { useTranslations } from 'next-intl'
+import { useLocaleSwitch } from './ClientLocaleProvider'
+
+
+interface TarotReading {
+  ko: string
+  en: string
+}
 
 interface ResultComponentProps {
   selectedCards: any[]
-  aiResult: string
+  aiResult: TarotReading | null
   isLoading: boolean
   onRestart: () => void
 }
@@ -19,9 +27,22 @@ export default function ResultComponent({
   onRestart,
 }: ResultComponentProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
+  const t = useTranslations()
+  const { locale } = useLocaleSwitch()
+  const [isTypingDone, setIsTypingDone] = useState(false)
+  const [isSharing, setIsSharing] = useState(false)
+
+  const displayResult = aiResult ? (aiResult[locale as keyof TarotReading] || aiResult.ko) : ''
+
+  const handleTypingComplete = useCallback(() => {
+    setIsTypingDone(true)
+  }, [])
 
   // 공유하기 기능 함수 (서버 저장 + 짧은 URL)
   const handleShare = async () => {
+    if (isSharing) return // 중복 호출 방지
+    setIsSharing(true)
+
     try {
       const id = nanoid(10) // 짧은 고유 ID 생성
 
@@ -40,18 +61,30 @@ export default function ResultComponent({
 
       const shareUrl = `${window.location.origin}/share/${id}`
 
+      // navigator.share 시도 → 실패하면 클립보드 복사로 폴백
       if (navigator.share) {
-        await navigator.share({
-          title: '고양이 타로 결과',
-          text: '나의 신비로운 고양이 타로 결과를 확인해봐!',
-          url: shareUrl,
-        })
+        try {
+          await navigator.share({
+            title: t('result.shareTitle'),
+            text: t('result.shareText'),
+            url: shareUrl,
+          })
+        } catch (shareError: any) {
+          // 사용자가 취소한 경우는 무시
+          if (shareError?.name !== 'AbortError') {
+            // share 실패 시 클립보드 복사로 폴백
+            await navigator.clipboard.writeText(shareUrl)
+            alert(t('result.shareCopied'))
+          }
+        }
       } else {
         await navigator.clipboard.writeText(shareUrl)
-        alert('결과가 담긴 링크가 복사되었다냥! 🐾')
+        alert(t('result.shareCopied'))
       }
     } catch (error) {
       console.error('공유하기 실패:', error)
+    } finally {
+      setIsSharing(false)
     }
   }
 
@@ -98,7 +131,7 @@ export default function ResultComponent({
               />
             </div>
             <span className='text-amber-400 font-bold text-sm md:text-base'>
-              {i === 0 ? '과거' : i === 1 ? '현재' : '미래'}
+              {i === 0 ? t('common.past') : i === 1 ? t('common.present') : t('common.future')}
             </span>
           </motion.div>
         ))}
@@ -112,14 +145,12 @@ export default function ResultComponent({
           <div className='flex flex-col items-center justify-center h-full gap-4 text-amber-200'>
             <div className='w-8 h-8 border-4 border-amber-400 border-t-transparent rounded-full animate-spin' />
             <p className='animate-pulse text-sm text-center md:text-lg'>
-              검은 고양이 점술사가
-              <br className='md:hidden' />
-              별의 지도를 읽고 있다냥...
+              {t('result.loading')}
             </p>
           </div>
         ) : (
           <div className='pb-4'>
-            <TypingText text={aiResult} />
+            <TypingText text={displayResult} onComplete={handleTypingComplete} />
           </div>
         )}
       </div>
@@ -132,17 +163,24 @@ export default function ResultComponent({
           onClick={onRestart}
           className='flex-1 max-w-[160px] flex items-center justify-center gap-1.5 px-3 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-200 border border-amber-500/30 transition-all text-xs md:text-base whitespace-nowrap'>
           <RotateCcw className='w-3.5 h-3.5 md:w-4 md:h-4' />
-          다시 점치기
+          {t('result.restart')}
         </button>
 
         {/* 결과 공유하기 버튼 */}
         <button
           onClick={handleShare}
-          className='flex-1 max-w-[200px] group relative flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-900 font-bold shadow-lg transition-all text-xs md:text-base whitespace-nowrap'>
-          <Share2 className='w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform' />
-          결과 공유하기
+          disabled={!isTypingDone}
+          className={`flex-1 max-w-[200px] group relative flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl font-bold shadow-lg transition-all text-xs md:text-base whitespace-nowrap ${
+            isTypingDone
+              ? 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-900 cursor-pointer'
+              : 'bg-slate-700 text-slate-500 border border-slate-600 cursor-not-allowed'
+          }`}>
+          <Share2 className={`w-4 h-4 md:w-5 md:h-5 transition-transform ${isTypingDone ? 'group-hover:scale-110' : ''}`} />
+          {t('result.share')}
           {/* 반짝임 광택 효과 */}
-          <div className='absolute inset-0 bg-white/20 blur-md rounded-xl opacity-0 group-hover:opacity-100 transition-opacity' />
+          {isTypingDone && (
+            <div className='absolute inset-0 bg-white/20 blur-md rounded-xl opacity-0 group-hover:opacity-100 transition-opacity' />
+          )}
         </button>
       </motion.div>
     </div>

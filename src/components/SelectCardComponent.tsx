@@ -2,8 +2,9 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
-import { Sparkles } from 'lucide-react'
+import { PawPrint } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 interface TarotCard {
   id: string
@@ -23,6 +24,7 @@ export default function SelectCardComponent({
   const [selectedCards, setSelectedCards] = useState<TarotCard[]>([])
   const [shuffledCards, setShuffledCards] = useState<TarotCard[]>([])
   const [isDisabled, setIsDisabled] = useState(true)
+  const t = useTranslations()
 
   useEffect(() => {
     const shuffled = [...allCards].sort(() => Math.random() - 0.5)
@@ -53,9 +55,7 @@ export default function SelectCardComponent({
   return (
     <div className='min-h-screen h-full text-white flex flex-col items-center justify-center gap-5 md:gap-8 px-0 md:px-5 py-5 md:py-10'>
       <h2 className='text-base md:text-2xl text-amber-100 text-center px-4'>
-        마음을 담아 3장의
-        <br className='md:hidden' />
-        카드를 골라주세요
+        {t('select.instruction')}
       </h2>
 
       {/* 선택된 카드가 놓일 자리 (Slot) */}
@@ -88,7 +88,7 @@ export default function SelectCardComponent({
 
         {selectedCards.length === 0 && (
           <p className='text-slate-500 text-base md:text-lg'>
-            카드가 여기에 나타납니다
+            {t('select.placeholder')}
           </p>
         )}
       </div>
@@ -159,11 +159,11 @@ export default function SelectCardComponent({
         {!isDisabled && (
           <div className='absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000' />
         )}
-        <Sparkles className='w-4 h-4 md:w-5 md:h-5 text-amber-400 group-hover:animate-pulse flex-shrink-0' />
+        <PawPrint className='w-4 h-4 md:w-5 md:h-5 text-amber-400 group-hover:animate-pulse flex-shrink-0' />
         <span className='text-base md:text-2xl font-medium text-amber-50 tracking-wider whitespace-nowrap'>
-          결과 확인
+          {t('select.confirm')}
         </span>
-        <Sparkles className='w-4 h-4 md:w-5 md:h-5 text-amber-400 group-hover:animate-pulse flex-shrink-0' />
+        <PawPrint className='w-4 h-4 md:w-5 md:h-5 text-amber-400 group-hover:animate-pulse flex-shrink-0' />
       </motion.button>
     </div>
   )

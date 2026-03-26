@@ -1,0 +1,73 @@
+{
+  "common": {
+    "past": "과거",
+    "present": "현재",
+    "future": "미래",
+    "login": "로그인",
+    "logout": "로그아웃",
+    "error": "운명의 실타래가 꼬였다냥... 잠시 후 다시 시도해달라냥!"
+  },
+  "main": {
+    "title": "고양이 점술사",
+    "subtitle": "영험한 검은 고양이가 집사님의 운명을 읽어드립니다.",
+    "footer": "고양이가 세상을 구한다."
+  },
+  "menu": {
+    "love": "연애",
+    "money": "금전",
+    "health": "건강",
+    "career": "직업",
+    "daily": "오늘의 운세",
+    "free": "FREE"
+  },
+  "ment": {
+    "loveMent": "누군가의 마음을 사냥하고 싶은 집사가 왔구냥?",
+    "careerMent": "거친 사냥터에서 살아남고 싶은 집사로구냥.",
+    "moneyMent": "황금 츄르를 가득 모으고 싶은 집사로구냥.",
+    "healthMent": "건강이 궁금해서 나를 찾아왔구냥?",
+    "dailyMent": "오늘은 얼마나 행복한 일이 있을까?",
+    "inputGuide": "{menuName}에 대한 질문을 적어보라냥",
+    "lovePlaceholder": "예) 썸 타는 사람과 잘 될 수 있을까?",
+    "moneyPlaceholder": "예) 올해 재테크 운이 좋을까?",
+    "healthPlaceholder": "예) 요즘 몸이 안 좋은데 괜찮아질까?",
+    "careerPlaceholder": "예) 이직해도 괜찮을까?",
+    "dailyPlaceholder": "예) 오늘 하루 어떤 일이 생길까?",
+    "submitButton": "입력완료"
+  },
+  "shuffle": {
+    "shuffling": "운명의 카드를 섞는 중..."
+  },
+  "select": {
+    "instruction": "마음을 담아 3장의 카드를 골라주세요",
+    "placeholder": "카드가 여기에 나타납니다",
+    "confirm": "결과 확인"
+  },
+  "result": {
+    "loading": "검은 고양이 점술사가 별의 지도를 읽고 있다냥...",
+    "restart": "다시 점치기",
+    "share": "결과 공유하기",
+    "shareTitle": "고양이 타로 결과",
+    "shareText": "나의 신비로운 고양이 타로 결과를 확인해봐!",
+    "shareCopied": "결과가 담긴 링크가 복사되었다냥! 🐾"
+  },
+  "login": {
+    "welcome": "고양이 점술사를 찾아 오신걸 환영합니다.",
+    "description": "로그인하고 당신의 운세를 기록해보세요.",
+    "google": "Sign in with Google",
+    "kakao": "카카오로 시작하기",
+    "terms": "로그인 시 {terms} 및 {privacy}에 동의하게 됩니다.",
+    "termsLink": "이용약관",
+    "privacyLink": "개인정보처리방침"
+  },
+  "shareView": {
+    "title": "✦ 고양이 점술사의 타로 결과 ✦",
+    "tryButton": "나도 점 보러 가기"
+  },
+  "apiTarot": {
+    "errorNotSetKey": "API_KEY가 설정되지 않았습니다.",
+    "errorMsg": "AI가 졸고 있다냥...",
+    "errorCard": "카드가 3장이 아닙니다.",
+    "errorEmpty": "AI가 빈 응답을 반환했습니다."
+   
+  }
+}

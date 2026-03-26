@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react'
 interface TypingTextProps {
   text?: string;
   speed?: number; // 글자당 속도 (ms)
+  onComplete?: () => void; // 타이핑 완료 콜백
 }
 
-export default function TypingText({ text="", speed = 40 }: TypingTextProps) {
+export default function TypingText({ text="", speed = 40, onComplete }: TypingTextProps) {
   const [displayedText, setDisplayedText] = useState('')
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -25,8 +26,10 @@ export default function TypingText({ text="", speed = 40 }: TypingTextProps) {
       }, speed)
 
       return () => clearTimeout(timeout) // 클린업 함수로 메모리 누수 방지
+    } else if (text.length > 0 && onComplete) {
+      onComplete()
     }
-  }, [currentIndex, text, speed])
+  }, [currentIndex, text, speed, onComplete])
 
   return (
     <div className="leading-relaxed whitespace-pre-wrap font-light text-slate-200 text-sm md:text-lg">

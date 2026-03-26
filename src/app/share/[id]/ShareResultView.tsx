@@ -4,24 +4,45 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { RotateCcw } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useLocaleSwitch } from '@/src/components/ClientLocaleProvider'
+import LanguageSwitcher from '@/src/components/LanguageSwitcher'
+
+interface TarotReading {
+  ko: string
+  en: string
+}
 
 interface ShareResultViewProps {
   selectedCards: { id: string; image: string; name: string }[]
-  aiResult: string
+  aiResult: TarotReading | string
 }
 
 export default function ShareResultView({
   selectedCards,
   aiResult,
 }: ShareResultViewProps) {
+  const t = useTranslations()
+  const { locale } = useLocaleSwitch()
+
+  // 구버전(string) 호환 + 신버전(TarotReading) 지원
+  const displayResult = typeof aiResult === 'string'
+    ? aiResult
+    : (aiResult[locale as keyof TarotReading] || aiResult.ko)
+
   return (
     <div className='z-10 w-full h-full min-h-screen max-w-4xl px-8 md:px-6 py-5 md:py-10 flex flex-col items-center justify-center gap-5 md:gap-10'>
+      {/* 다국어 전환 버튼 */}
+      <div className='absolute top-4 right-4 md:top-6 md:right-6 z-20'>
+        <LanguageSwitcher />
+      </div>
+
       {/* 공유 결과 타이틀 */}
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className='text-amber-400/70 text-xs md:text-sm tracking-widest'>
-        ✦ 고양이 점술사의 타로 결과 ✦
+        {t('shareView.title')}
       </motion.p>
 
       {/* 선택한 3장의 카드 */}
@@ -43,7 +64,7 @@ export default function ShareResultView({
               />
             </div>
             <span className='text-amber-400 font-bold text-sm md:text-base'>
-              {i === 0 ? '과거' : i === 1 ? '현재' : '미래'}
+              {i === 0 ? t('common.past') : i === 1 ? t('common.present') : t('common.future')}
             </span>
           </motion.div>
         ))}
@@ -56,7 +77,7 @@ export default function ShareResultView({
         transition={{ delay: 0.9 }}
         className='w-full bg-slate-900/60 backdrop-blur-md border border-amber-500/20 rounded-3xl p-4 md:p-8 shadow-2xl overflow-y-auto scrollbar-hide max-h-[300px] md:max-h-[400px]'>
         <p className='text-amber-100 text-sm md:text-base leading-relaxed whitespace-pre-wrap'>
-          {aiResult}
+          {displayResult}
         </p>
       </motion.div>
 
@@ -69,7 +90,7 @@ export default function ShareResultView({
           href='/main'
           className='flex items-center justify-center gap-2 px-8 py-3 md:px-12 md:py-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-900 font-bold shadow-lg transition-all text-sm md:text-base whitespace-nowrap'>
           <RotateCcw className='w-4 h-4 md:w-5 md:h-5' />
-          나도 점 보러 가기
+          {t('shareView.tryButton')}
         </Link>
       </motion.div>
     </div>

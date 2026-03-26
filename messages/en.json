@@ -1,0 +1,72 @@
+{
+  "common": {
+    "past": "Past",
+    "present": "Present",
+    "future": "Future",
+    "login": "Login",
+    "logout": "Logout",
+    "error": "The thread of fate got tangled... Please try again later!"
+  },
+  "main": {
+    "title": "Cat Fortune Teller",
+    "subtitle": "A mysterious black cat reads your destiny.",
+    "footer": "Cats will save the world."
+  },
+  "menu": {
+    "love": "Love",
+    "money": "Money",
+    "health": "Health",
+    "career": "Career",
+    "daily": "Daily Fortune",
+    "free": "FREE"
+  },
+  "ment": {
+    "loveMent": "So you want to hunt someone's heart, meow?",
+    "careerMent": "Trying to survive the wild jungle, meow.",
+    "moneyMent": "Want to fill your piggy bank with gold, meow.",
+    "healthMent": "Curious about your health, meow?",
+    "dailyMent": "Wonder what happiness today will bring?",
+    "inputGuide": "Write your question about {menuName}, meow",
+    "lovePlaceholder": "e.g.) Will things work out with my crush?",
+    "moneyPlaceholder": "e.g.) Will my investments be lucky this year?",
+    "healthPlaceholder": "e.g.) I've been feeling unwell, will I be OK?",
+    "careerPlaceholder": "e.g.) Should I change jobs?",
+    "dailyPlaceholder": "e.g.) What will happen today?",
+    "submitButton": "Ready"
+  },
+  "shuffle": {
+    "shuffling": "Shuffling the cards of destiny..."
+  },
+  "select": {
+    "instruction": "Choose 3 cards with your heart",
+    "placeholder": "Cards will appear here",
+    "confirm": "See Results"
+  },
+  "result": {
+    "loading": "The black cat fortune teller is reading the star map...",
+    "restart": "Try Again",
+    "share": "Share Results",
+    "shareTitle": "Cat Tarot Results",
+    "shareText": "Check out my mysterious cat tarot results!",
+    "shareCopied": "Link copied! 🐾"
+  },
+  "login": {
+    "welcome": "Welcome to the Cat Fortune Teller",
+    "description": "Sign in to save your fortune readings.",
+    "google": "Sign in with Google",
+    "kakao": "Sign in with Kakao",
+    "terms": "By signing in, you agree to our {terms} and {privacy}.",
+    "termsLink": "Terms of Service",
+    "privacyLink": "Privacy Policy"
+  },
+  "shareView": {
+    "title": "✦ Cat Fortune Teller Results ✦",
+    "tryButton": "Try It Myself"
+  },
+  "apiTarot": {
+    "errorNotSetKey": "API_KEY is not configured.",
+    "errorMsg": "The AI is napping, meow...",
+    "errorCard": "You need exactly 3 cards.",
+    "errorEmpty": "The AI returned an empty response."
+  }
+}

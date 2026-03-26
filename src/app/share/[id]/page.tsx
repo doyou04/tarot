@@ -14,7 +14,7 @@ export default async function SharePage({ params }: SharePageProps) {
   // 1. 공유 데이터 파일 읽기 (서버에서 직접 — API 호출 없음)
   const filePath = path.join(process.cwd(), '.data', 'shares', `${id}.json`)
 
-  let shareData: { ids: string[]; result: string }
+  let shareData: { ids: string[]; result: { ko: string; en: string } | string }
   try {
     const content = await fsp.readFile(filePath, 'utf-8')
     shareData = JSON.parse(content)
@@ -34,7 +34,10 @@ export default async function SharePage({ params }: SharePageProps) {
       name: file.split('_').slice(1).join(' ').replace('.jpg', ''),
     }))
 
-  const selectedCards = allCards.filter(c => shareData.ids.includes(c.id))
+  // ids 순서(과거→현재→미래)를 유지하며 카드 정보 매칭
+  const selectedCards = shareData.ids
+    .map(id => allCards.find(c => c.id === id))
+    .filter(Boolean) as { id: string; image: string; name: string }[]
 
   // 3. 데이터가 포함된 상태로 바로 렌더링 — 클라이언트에서 fetch 없음
   return (

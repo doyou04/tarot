@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'API_KEY가 설정되지 않았습니다.' },
+        { error: "API Key not found" },
         { status: 500 }
       )
     }
@@ -29,11 +29,14 @@ export async function POST(req: Request) {
     const genAI = new GoogleGenerativeAI(apiKey)
     const model = genAI.getGenerativeModel({
       model: 'models/gemini-2.5-flash',
+      generationConfig: {
+    responseMimeType: "application/json",
+  },
     })
 
     if (!cards || cards.length < 3) {
       return NextResponse.json(
-        { error: '카드가 3장이 아닙니다.' },
+        { error: 'Invalid cards' },
         { status: 400 }
       )
     }
@@ -52,6 +55,12 @@ export async function POST(req: Request) {
       - 세 카드를 타로에 기반하여 흐름을 하나로 이어서 스토리텔링 형식으로 해석해줘.
       - 전체 내용을 '과거-현재-미래' 섹션으로 나누지 말고, 술사가 이야기해 주듯 자연스러운 문단으로 작성해라냥!
       ${question ? '- 집사의 질문에 대한 답변을 카드 해석에 자연스럽게 녹여서 이야기해줘.' : ''}
+      [중요 - 출력 형식]
+      반드시 아래 JSON 형식으로만 응답해라냥:
+      {
+        "ko": "한국어 해석 (~냥 말투)",
+        "en": "English interpretation (Keep the cat persona, use '~nyan' or 'meow')"
+      }
     `
 
     const result = await model.generateContent(prompt)
@@ -62,10 +71,18 @@ export async function POST(req: Request) {
       throw new Error('AI가 빈 응답을 반환했습니다.')
     }
 
-    return NextResponse.json({ result: text })
+    try {
+      const jsonResult = JSON.parse(text);
+
+      return NextResponse.json({ result: jsonResult });
+    } catch (parseError) {
+      console.error("JSON 파싱 에러:", parseError);
+      throw new Error('AI 응답 형식이 올바르지 않습니다.');
+    }
+
   } catch (error: any) {
     return NextResponse.json(
-      { error: 'AI가 졸고 있다냥..', message: error.message },
+      { error: "AI가 졸고 있다냥...", message: error.message },
       { status: 500 }
     )
   }
