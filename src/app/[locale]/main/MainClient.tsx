@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import CardShuffleComponent from '@/src/components/CardShuffleComponent'
@@ -12,13 +12,9 @@ import { MenuType } from '@/src/types/menu'
 import { useSession, signOut } from 'next-auth/react'
 import { LogIn, LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-import LanguageSwitcher from '@/src/components/LanguageSwitcher'
+import { useTranslations, useLocale } from 'next-intl'
 
-interface TarotReading {
-  ko: string
-  en: string
-}
+
 
 interface TarotCard {
   id: string
@@ -30,15 +26,18 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
   const { data: session } = useSession()
   const router = useRouter()
   const t = useTranslations()
+  const locale = useLocale()
   const [status, setStatus] = useState<
     'intro' | 'select' | 'shuffling' | 'showCard' | 'result'
   >('intro')
   const [selectedMenu, setSelectedMenu] = useState<MenuType | null>(null)
   const [selectedCards, setSelectedCards] = useState<TarotCard[]>([])
-  const [aiResult, setAiResult] = useState<TarotReading | null>(null)
+  const [aiResult, setAiResult] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [userQuestion, setUserQuestion] = useState<string>('')
+
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   // 컴포넌트가 마운트(브라우저 로드)된 후에만 true가 됨
   useEffect(() => {
@@ -61,11 +60,28 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
     setStatus('select')
   }
 
+  // 다시하기 함수
+  const handleRestart = () => {
+    // AI 로딩 중에 다시하기를 눌렀다면, 진행 중인 요청을 즉시 강제 취소 (비용 세이브!)
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      abortControllerRef.current = null // 컨트롤러 초기화
+    }
+
+    // 모든 상태를 초기값으로 되돌리고 메인 화면으로 이동
+    setStatus('intro')
+    setSelectedCards([])
+    setAiResult(null)
+    setUserQuestion('')
+  }
+
   // 카드 3장 선택 완료 시 실행될 함수
   const handleCardsSelected = async (cards: TarotCard[]) => {
     setSelectedCards(cards)
     setStatus('result')
     setIsLoading(true)
+
+    abortControllerRef.current = new AbortController();
 
     try {
       const response = await fetch('/api/tarot', {
@@ -74,6 +90,7 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
         body: JSON.stringify({
           menu: selectedMenu,
           question: userQuestion,
+          locale,
           cards: cards.map((c, i) => ({
             pos: i === 0 ? t('common.past') : i === 1 ? t('common.present') : t('common.future'),
             name: c.name,
@@ -84,15 +101,14 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
       const data = await response.json()
       setAiResult(data.result)
     } catch (error) {
-      const errorMsg = t('common.error')
-      setAiResult({ ko: errorMsg, en: errorMsg })
+      setAiResult(t('common.error'))
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <main className='relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-black overflow-hidden'>
+    <main className='relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-black'>
       <div className='absolute inset-0 z-0'>
         <Image
           src='/images/main/bg.jpg'
@@ -110,7 +126,7 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
 
       {/* 로그인/로그아웃 + 언어 전환 버튼 */}
       <div className='absolute top-4 right-4 md:top-6 md:right-6 z-20 flex items-center gap-2'>
-        <LanguageSwitcher />
+        {/* {status === 'intro' && <LanguageSwitcher />} */}
         {session ? (
           <button
             onClick={() => signOut()}
@@ -148,17 +164,9 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
           <div className='grid grid-cols-2 gap-2 md:gap-4'>
             <MenuButtonComponent onSelect={handleStart} />
           </div>
-
-          {/* 하단 장식 요소 */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.5 }}
-            transition={{ delay: 1.5, duration: 2 }}
-            className='absolute bottom-10 text-[10px] text-amber-200/40 tracking-[0.5em] uppercase'>
-            {t('main.footer')}
-          </motion.div>
         </div>
       )}
+
 
       {/* image select 영역 */}
       {status === 'select' && (
@@ -195,7 +203,7 @@ export default function MainClient({ allCards }: { allCards: TarotCard[] }) {
           selectedCards={selectedCards}
           aiResult={aiResult}
           isLoading={isLoading}
-          onRestart={() => setStatus('intro')} // 처음으로 돌아가기 기능
+          onRestart={handleRestart} // 처음으로 돌아가기 기능
         />
       )}
     </main>

@@ -52,7 +52,7 @@
   },
   "login": {
     "welcome": "고양이 점술사를 찾아 오신걸 환영합니다.",
-    "description": "로그인하고 당신의 운세를 기록해보세요.",
+    "description": "로그인 후 당신의 운세를 확인해보세요.",
     "google": "Sign in with Google",
     "kakao": "카카오로 시작하기",
     "terms": "로그인 시 {terms} 및 {privacy}에 동의하게 됩니다.",
@@ -68,6 +68,61 @@
     "errorMsg": "AI가 졸고 있다냥...",
     "errorCard": "카드가 3장이 아닙니다.",
     "errorEmpty": "AI가 빈 응답을 반환했습니다."
+  },
+  "footer": {
+    "terms": "이용약관",
+    "privacy": "개인정보처리방침",
+    "businessInfo0":"사업자등록정보확인",
+    "businessInfo": "상호명: 고양이 점술사 | 대표: 김슬기 | 사업자등록번호: 000-00-00000",
+    "businessInfo2": "통신판매업신고번호: 제 2026-서울-00000호",
+    "aiDisclaimer": "본 서비스의 타로 해석은 AI(인공지능)에 의해 생성되며, 오락 목적으로만 제공됩니다. 전문적인 조언을 대체하지 않습니다.",
+    "copyright": "고양이 점술사. All rights reserved."
+  },
+  "businessPage": {
+    "title": "사업자 정보",
+    "back": "돌아가기",
+    "companyName": { "label": "상호명", "value": "고양이 점술사" },
+    "ceo": { "label": "대표자", "value": "김슬기" },
+    "regNo": { "label": "사업자등록번호", "value": "000-00-00000" },
+    "ecommerce": { "label": "통신판매업신고", "value": "제 2026-서울-00000호" },
+    "address": { "label": "사업자등록지", "value": "서울특별시 강북구 도봉로96길 31" },
+    "phone": { "label": "연락처", "value": "02-1234-5678" },
+    "email": { "label": "이메일", "value": "contact@cattarot.com" }
    
+  },
+  "mypage": {
+    "title": "집사의 서재",
+    "nickname": "닉네임",
+    "defaultName": "집사님",
+    "points": "츄르",
+    "pointsReadings": "츄르 리딩",
+    "pastReadings": "과거 타로 리딩",
+    "loadMore": "더보기",
+    "charge": "츄르 충전",
+    "refund": "환불 신청"
+  },
+  "sideMenu": {
+    "home": "타로 보기",
+    "mypage": "마이페이지",
+    "payment": "충전하기",
+    "language": "언어",
+    "login": "로그인",
+    "logout": "로그아웃",
+    "guest": "게스트"
+  },
+  "payment": {
+    "title": "츄르 충전",
+    "subtitle": "츄르 충전하고 타로 리딩을 받아보세요",
+    "popular": "인기",
+    "unit": "개",
+    "bonus": "보너스",
+    "perUnit": "개당",
+    "selected": "선택한 상품",
+    "totalPrice": "결제 금액",
+    "buyButton": "츄르 충전하기",
+    "notice1": "츄르는 타로 리딩 1회당 1개씩 사용됩니다.",
+    "notice2": "구매 후 환불은 미사용 츄르에 한해 7일 이내 가능합니다.",
+    "notice2_1": "(단, 보너스 츄르는 환불 불가)",
+    "notice3": "AI 생성 결과는 오락 목적이며, 전문적인 조언을 대체하지 않습니다."
   }
 }

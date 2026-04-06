@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { RotateCcw } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useLocaleSwitch } from '@/src/components/ClientLocaleProvider'
-import LanguageSwitcher from '@/src/components/LanguageSwitcher'
 
 interface TarotReading {
   ko: string
@@ -32,10 +31,7 @@ export default function ShareResultView({
 
   return (
     <div className='z-10 w-full h-full min-h-screen max-w-4xl px-8 md:px-6 py-5 md:py-10 flex flex-col items-center justify-center gap-5 md:gap-10'>
-      {/* 다국어 전환 버튼 */}
-      <div className='absolute top-4 right-4 md:top-6 md:right-6 z-20'>
-        <LanguageSwitcher />
-      </div>
+     
 
       {/* 공유 결과 타이틀 */}
       <motion.p

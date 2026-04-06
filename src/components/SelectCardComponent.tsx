@@ -53,7 +53,7 @@ export default function SelectCardComponent({
   }
 
   return (
-    <div className='min-h-screen h-full text-white flex flex-col items-center justify-center gap-5 md:gap-8 px-0 md:px-5 py-5 md:py-10'>
+    <div className='h-full text-white flex flex-col items-center justify-center gap-5 md:gap-8 px-0 md:px-5 py-5 md:py-10'>
       <h2 className='text-base md:text-2xl text-amber-100 text-center px-4'>
         {t('select.instruction')}
       </h2>

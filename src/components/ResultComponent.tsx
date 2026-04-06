@@ -5,17 +5,11 @@ import TypingText from './TypingText'
 import { Share2, RotateCcw } from 'lucide-react' 
 import { nanoid } from "nanoid"
 import { useTranslations } from 'next-intl'
-import { useLocaleSwitch } from './ClientLocaleProvider'
 
-
-interface TarotReading {
-  ko: string
-  en: string
-}
 
 interface ResultComponentProps {
   selectedCards: any[]
-  aiResult: TarotReading | null
+  aiResult: string | null
   isLoading: boolean
   onRestart: () => void
 }
@@ -28,11 +22,10 @@ export default function ResultComponent({
 }: ResultComponentProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const t = useTranslations()
-  const { locale } = useLocaleSwitch()
   const [isTypingDone, setIsTypingDone] = useState(false)
   const [isSharing, setIsSharing] = useState(false)
 
-  const displayResult = aiResult ? (aiResult[locale as keyof TarotReading] || aiResult.ko) : ''
+  const displayResult = aiResult || ''
 
   const handleTypingComplete = useCallback(() => {
     setIsTypingDone(true)
@@ -111,7 +104,7 @@ export default function ResultComponent({
   }, [isLoading])
 
   return (
-    <div className='z-10 w-full h-full min-h-screen max-w-4xl px-5 md:px-5 py-5 md:py-10 flex flex-col items-center justify-center gap-5 md:gap-10'>
+    <div className='z-10 w-full h-full max-w-4xl px-5 md:px-5 py-5 md:py-10 flex flex-col items-center justify-center gap-5 md:gap-10'>
       {/* 1. 선택한 3장의 카드 나열 */}
       <div className='flex gap-4 md:gap-8 justify-center items-end'>
         {selectedCards.map((card, i) => (
@@ -161,7 +154,12 @@ export default function ResultComponent({
         {/* 다시하기 버튼 */}
         <button
           onClick={onRestart}
-          className='flex-1 max-w-[160px] flex items-center justify-center gap-1.5 px-3 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-200 border border-amber-500/30 transition-all text-xs md:text-base whitespace-nowrap'>
+          disabled={!isTypingDone}
+          className={`flex-1 max-w-[160px] flex items-center justify-center gap-1.5 px-3 py-3 rounded-xl transition-all text-xs md:text-base whitespace-nowrap ${
+            isTypingDone
+              ? 'bg-slate-800 hover:bg-slate-700 text-amber-200 border border-amber-500/30 cursor-pointer'
+              : 'bg-slate-700 text-slate-500 border border-slate-600 cursor-not-allowed'
+          }`}>
           <RotateCcw className='w-3.5 h-3.5 md:w-4 md:h-4' />
           {t('result.restart')}
         </button>

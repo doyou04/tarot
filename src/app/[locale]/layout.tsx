@@ -1,38 +1,49 @@
-import {setRequestLocale} from 'next-intl/server'
-import {notFound} from 'next/navigation'
-import {routing} from '@/src/i18n/routing'
-import AuthProvider from '@/src/components/AuthProvider'
-import ClientLocaleProvider from '@/src/components/ClientLocaleProvider'
+import type { Metadata } from 'next'
+import { Noto_Sans_KR } from 'next/font/google'
+import { getLocale } from 'next-intl/server'
+import './globals.css'
+import AuthProvider from "@/src/components/AuthProvider";
+import Footer from "@/src/components/Footer";
+import SideMenu from "@/src/components/SideMenu";
+import ClientLocaleProvider from "@/src/components/ClientLocaleProvider";
+import koMessages from '@/messages/ko.json'
+import enMessages from '@/messages/en.json'
 
-// 메시지 파일 직접 import
-import koMessages from '../../../messages/ko.json'
-import enMessages from '../../../messages/en.json'
+const notoSansKR = Noto_Sans_KR({
+  variable: '--font-noto-sans-kr',
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '700'],
+  display: 'swap',
+})
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({locale}))
+export const metadata: Metadata = {
+  title: '타로 사이트',
+  description: '검은고양이가 미래를 보여주는 타로 사이트',
 }
 
-export default async function LocaleLayout({
+export default async function RootLayout({
   children,
-  params,
-}: {
+}: Readonly<{
   children: React.ReactNode
-  params: Promise<{locale: string}>
-}) {
-  const {locale} = await params
-  if (!routing.locales.includes(locale as any)) notFound()
-
-  setRequestLocale(locale)
-
+}>) {
+  const locale = await getLocale()
   return (
-    <AuthProvider>
-      <ClientLocaleProvider
-        initialLocale={locale}
-        koMessages={koMessages}
-        enMessages={enMessages}
-      >
-        {children}
-      </ClientLocaleProvider>
-    </AuthProvider>
+    <html lang={locale} suppressHydrationWarning>
+      <body
+        className={`${notoSansKR.variable} antialiased`}
+        suppressHydrationWarning={true}>
+        <ClientLocaleProvider
+          initialLocale={locale}
+          koMessages={koMessages}
+          enMessages={enMessages}
+        >
+          <AuthProvider>
+            <SideMenu />
+            {children}
+            <Footer />
+          </AuthProvider>
+        </ClientLocaleProvider>
+      </body>
+    </html>
   )
 }

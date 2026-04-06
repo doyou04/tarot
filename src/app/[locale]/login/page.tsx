@@ -1,20 +1,63 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
+import { signIn ,signOut, useSession} from 'next-auth/react';
+import { useRouter } from "next/navigation";
 import "@/styles/logo.css";
 import { useTranslations } from 'next-intl';
+import { useEffect } from "react";
+import Image from 'next/image'
 
 export default function LoginPage() {
   const t = useTranslations()
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+
+useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/");
+    }
+  }, [status, router]);
+
+
+  // 로딩 상태 처리
+  if (status === "loading") {
+    return <div className="min-h-screen bg-black" />; // 로딩 깜빡임 방지용 빈 화면
+  }
+
+// 로그인 된 상태
+  if (session) {
+    return (
+      <div className="flex flex-col items-center gap-4 p-8">
+        <p>환영합니다, {session.user?.name}님!</p>
+        <img src={session.user?.image || ""} alt="프로필 이미지" className="w-12 h-12 rounded-full" />
+        <button
+          onClick={() => signOut()}
+          className="px-4 py-2 bg-gray-200 text-black rounded-md"
+        >
+          로그아웃
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md space-y-8 rounded-2xl bg-white p-10 shadow-xl">
+    <div className="flex min-h-screen items-center justify-center bg-black px-4">
+          <Image
+                src='/images/main/bg.jpg'
+                alt='Mystic Black Cat Tarot'
+                fill
+                priority
+                quality={95}
+                sizes='100vw'
+                className={`object-cover transition-opacity duration-1000 opacity-30 object-center`}
+              />
+      <div className="relative z-10 w-full max-w-md space-y-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 p-10 shadow-2xl">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-100">
             {t('login.welcome')}
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-gray-200">
             {t('login.description')}
           </p>
         </div>
