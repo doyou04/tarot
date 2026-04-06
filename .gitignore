@@ -10,6 +10,19 @@
 !.yarn/releases
 !.yarn/versions
 
+# AI Agent directories
+.agent/
+.agents/
+.codex/
+.gemini/
+.goose/
+.kiro/
+.opencode/
+
+# Generated skills in any dot directory
+.*/skills/
+.claude/
+
 # testing
 /coverage
 
@@ -42,3 +55,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# AI/Agent related
+**/data/vector_db/
+**/logs/*.log
+**/cache/
+**/node_modules/
